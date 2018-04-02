@@ -1,0 +1,396 @@
+<!--/*
+
+Copyright (c) 2018, Yamir Encarnacion <yencarnacion@webninjapr.com>
+All Rights Reserved
+
+Inspired by https://github.com/euler/htmlimgs
+Copyright (c) 2010, Raymond L. Niemeir
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+of the Software, and to permit persons to whom the Software is furnished to do
+so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+*/
+-->
+<html>
+<head>
+  <title>Images in ?</title>
+  <style>
+    html, body {
+       margin: 0;
+       padding: 0;
+       height: 100%;
+    }
+    div {
+       height: 95%;
+       margin: 0;
+       padding: 0;
+    }
+    body {
+       background: black;
+       color: #cccccc;
+       margin: 0;
+       padding: 0;
+    }
+    .max90 {
+       max-height:95%;
+       max-width: 100%;
+       margin: 0;
+       padding: 0;
+       text-align: center;
+    }
+    .full {
+       max-height: none;
+       max-width: none;
+       margin: 0;
+       text-align: center;
+    }
+    .boxedimg {
+       max-height: inherit;
+       max-width: inherit;
+       margin: 0;
+       padding: 0;
+    }
+    .center {
+       text-align: center;
+       margin: 0;
+       padding: 0;
+    }
+    .label {
+       font-family: helvetica;
+       font-style: bold;
+       text-align: center;
+    }
+  </style>
+  <script>
+
+// General Note US8966661 is the last patent with images available
+// So, can load images up to http://patentimages.storage.googleapis.com/pages/US8966661-0.png (last)
+
+// Patents for CPC/G06N3/084 Back Propagation as of 20180402
+// http://patft.uspto.gov/netacgi/nph-Parser?Sect1=PTO2&Sect2=HITOFF&u=%2Fnetahtml%2FPTO%2Fsearch-adv.htm&r=0&p=1&f=S&l=50&Query=CPC%2FG06N3%2F084&d=PTXT
+// images available from #76 onward or US8892557
+  rows = [
+//"9914213",
+//"9911069",
+//"9904875",
+//"9892361",
+//"9870537",
+//"9858496",
+//"9846840",
+//"9842585",
+//"9842106",
+//"9836641",
+//"9817375",
+//"9800955",
+//"9792547",
+//"9779355",
+//"9767408",
+//"9767381",
+//"9728184",
+//"9715642",
+//"9704097",
+//"9704068",
+//"9691020",
+//"9659249",
+//"9659248",
+//"9633306",
+//"9633274",
+//"9626621",
+//"9619749",
+//"9591580",
+//"9582753",
+//"9578234",
+//"9569722",
+//"9563854",
+//"9563853",
+//"9552549",
+//"9547821",
+//"9521158",
+//"9519859",
+//"9514405",
+//"9514404",
+//"9503466",
+//"9495633",
+//"9489623",
+//"9483728",
+//"9460401",
+//"9456131",
+//"9450978",
+//"9449344",
+//"9449271",
+//"9413779",
+//"9406017",
+//"9406016",
+//"9390373",
+//"9390370",
+//"9379546",
+//"9346167",
+//"9342781",
+//"9336268",
+//"9324022",
+//"9274036",
+//"9245224",
+//"9230550",
+//"9177550",
+//"9160760",
+//"9147154",
+//"9141916",
+//"9141906",
+//"9099083",
+//"9092726",
+//"9088533",
+//"9052896",
+//"9046932",
+//"9043255",
+//"9031844",
+//"9015086",
+//"8972253",
+"8892557",
+"8755958",
+"8655814",
+"8634476",
+"8548656",
+"8538963",
+"8527276",
+"8511145",
+"8503539",
+"8484022",
+"8468108",
+"8225074",
+"7953683",
+"7747070",
+"7577624",
+"6704717",
+"6601051",
+"6134528",
+"6016384",
+"5857178",
+"5742740",
+"5689622",
+"5671335",
+"5649065",
+"5640494",
+"5555439",
+"5333239",
+"5295228",
+"5228113",
+"5181171",
+"5168550",
+"5129039",
+"5129038",
+"5093899",
+"4912655",
+"4912652",
+"4912651",
+"4912649"
+  ];
+
+function initPage() {
+ /* Init global variables */
+ rowname = document.getElementById("rowname");
+ img = document.getElementById("img");
+ imgbox = document.getElementById("imgbox");
+ numrows = rows.length;
+ row = 0;
+ col = 0;
+ actions = 0;
+
+ /* Action keys. Case-insensitive regular expresions */
+ sizechars = /[-+_=]/;
+ nextrowchars = /[j]/i;
+ prevrowchars = /[k]/i;
+ nextcolchars = /[l]/i;
+ prevcolchars = /[h]/i;
+ gotorowchars = /[g]/i;
+
+ /* Maybe jump to #n hash */
+ if(parent.location.hash){
+   row = parseInt(parent.location.hash.substring(1))-1;
+ }
+ showimage(row,col);
+}
+
+function showimage(row, col){
+ r = row;
+ c = col;
+
+ /* Show image URL */
+ rowname.innerHTML = 'http://patentimages.storage.googleapis.com/pages/US'+rows[r]+'-'+c+'.png';
+
+ status.innerHTML = "Row " + (r+1) + " of " + numrows + ".";
+
+ /* Update browser's URL display to current row */
+ parent.location.hash = ""+(r+1)+"";
+
+ /* Increment global actions counter for higher level keystroke filter */
+ actions++;
+ /* Start loading */
+ img.src = 'http://patentimages.storage.googleapis.com/pages/US'+rows[r]+'-'+c+'.png';
+}
+
+function swapimgboxclass(){
+  imgbox.className = (imgbox.className == "max90") ? "full" : "max90";
+  actions++;
+  return false;
+}
+
+function nextrow() {
+ row = row + 1;
+ resetcol = 1;
+ /* Clip n to array bounds */
+ if ( row >= numrows ){
+    row = numrows-1;
+    resetcol = 0
+ }
+ if ( row < 0  ){ 
+    row = 0;
+    resetcol = 0
+ }
+ /* Dont reset column if at edges */
+ if(resetcol === 1){
+    col = 0
+ }
+
+ showimage(row, col);
+}
+
+function prevrow() {
+ row = row - 1;
+ resetcol = 1;
+ /* Clip n to array bounds */
+ if ( row >= numrows ){
+    row = numrows-1;
+    resetcol = 0
+ }
+ if ( row < 0  ){ 
+    row = 0;
+    resetcol = 0
+ }
+ /* Dont reset column if at edges */
+ if(resetcol === 1){
+    col = 0
+ }
+
+ showimage(row,col);
+}
+
+function nextcol() {
+ col = col + 1;
+ if ( col < 0  ){ 
+    col = 0;
+ }
+
+ showimage(row,col);
+}
+
+function prevcol() {
+ col = col - 1;
+ if ( col < 0  ){ 
+    col = 0;
+ }
+
+ showimage(row,col);
+}
+
+
+function gotorow() {
+  var nstr = prompt("Go to row 1 to " + numrows + "? ", (row+1) + "");
+  n = parseInt(nstr) - 1;
+  if (isNaN(n)) n = 0;
+
+  row = n;
+  col = 0;
+
+  showimage(row,col);
+}
+
+function dokey(e){
+  /* Non-IE handling only */
+  var keychar = e.key;
+
+  /* Remember actions, the global count of display actions */
+  var inbound_actions = actions;
+
+  var arrowpressed = 0;
+  /* Arrow keys */
+  // left arrow
+  if (e.keyCode === 37){
+     arrowpressed = 1;
+     prevcol();
+  }
+  // up arrow
+  if (e.keyCode === 38){
+     arrowpressed = 1;
+     prevrow();
+  }
+  // right arrow
+  if (e.keyCode === 39){
+     arrowpressed = 1;
+     nextcol();
+  }
+  // down arrow
+  if (e.keyCode === 40){ 
+     arrowpressed = 1;
+     nextrow();
+  }
+
+  if(arrowpressed === 0){
+     if (nextrowchars.test(keychar)) nextrow();
+     if (prevrowchars.test(keychar)) prevrow();
+     if (nextcolchars.test(keychar)) nextcol();
+     if (prevcolchars.test(keychar)) prevcol();
+     if (gotorowchars.test(keychar)) gotorow(); 
+     if (sizechars.test(keychar)) swapimgboxclass(); 
+  }
+
+  /*
+  ** If keystroke caused action, do no more processing.
+  ** Otherwise, process the event as usuual.
+  */
+
+  if (actions != inbound_actions) {
+    /* Keystroke caused action, no more processing */
+    if (e.preventDefault) e.preventDefault( );
+    if (e.returnValue) e.returnValue = false;
+    return false;
+  }
+  /* Pass the event/keystroke along for higher level processing */
+  return true;
+
+}
+
+</script>
+</head>
+
+<body onload="initPage();" onkeydown="dokey(event);">
+
+<div class="center">
+  <div id="imgbox" class="max90">
+     <img id="img" class="boxedimg"
+        src=""
+        onclick="swapimgboxclass();"/>
+     <ul class="label">
+        <li id="rowname">File Name</li>
+        <li id="status">Image x of N</li>
+     </ul>
+    (Forward, back with "j","k"; Left, Righ with "h", "l"; click|+- toggle size,"g" goto)
+  </div>
+</div>
+
+</body>
+</html>
